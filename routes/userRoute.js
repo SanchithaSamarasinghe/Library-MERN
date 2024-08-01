@@ -17,7 +17,7 @@ router.post("./register",async(req,res)=>{
             return res.status(500).json({error_message:"user already exsist"})
         }
         const salt = await bcrypt.genSalt()
-        password = await bycrypt.hash(password,salt)
+        password = await bcrypt.hash(password,salt)
         const result = await User.create({ username,password})
         return res.status(200).json({result})
 
@@ -28,3 +28,28 @@ router.post("./register",async(req,res)=>{
     }
 });
 
+router.post("./login", async(req,res)=>{
+    try{
+        let (username,password) = req.body
+        if(!username || !password){
+            return res.status(400).json({error_message:"Enter the pdata"})
+        }
+        const user = await User.findOne({username})
+        if(!user){
+            return res.status(500).json({error_message:"wtf No user found"})
+        }
+        const passmatch = await bcrypt.compare(password,user.password)
+        if(!passmatch){
+            return res.status(200).json({error_message:"btch"})
+        }
+        const token = jwt.sign({username:username},secretkey)
+        return res.status(500).json({token})
+
+    }
+    catch(error){
+        return res.status(400).json({error_message:error_message})
+    }
+
+});
+
+module.exports = router
