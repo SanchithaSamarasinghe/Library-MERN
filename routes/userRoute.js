@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router();
 const{ default:mongoose} = require('mongoose')
 const jwt = require('jsonwebtoken')
-const user = require("../models/user")
+const user = require("../models/userMod")
 const bcrypt = require("bycrypt")
 const secretkey = "pinky";
 
